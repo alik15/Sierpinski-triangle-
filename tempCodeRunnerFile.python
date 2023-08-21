@@ -1,0 +1,53 @@
+import pygame
+import random
+import numpy as np
+
+# Initialize Pygame
+pygame.init()
+
+# Set the size of the window
+window_size = (800, 600)
+screen = pygame.display.set_mode(window_size)
+pygame.display.set_caption("Chaos Game")
+
+# Set the colors
+BLACK = pygame.Color(0, 0, 0)
+WHITE = pygame.Color(255, 255, 255)
+RED = pygame.Color(255, 0, 0)
+
+# Define the vertices of the triangle
+vertices = [(window_size[0] // 2, 50), (150, window_size[1] - 50), (650, window_size[1] - 50)]
+
+# Starting point
+current_point = np.array([window_size[0] // 2, window_size[1] // 2])
+
+# Create a NumPy array for pixel-level drawing
+pixels = np.zeros(window_size, dtype=np.uint32)
+
+# Game loop
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Choose a random vertex
+    vertex = random.choice(vertices)
+
+    # Calculate the midpoint between the current point and the chosen vertex
+    current_point = (current_point + vertex) // 2
+
+    # Perform boundary checks to ensure the current point remains within valid coordinates
+    current_point = np.clip(current_point, (0, 0), (window_size[0] - 1, window_size[1] - 1))
+
+    # Set the color of the current point
+    pixels[current_point[1], current_point[0]] = RED.r
+
+    # Blit the pixel array onto the screen
+    pygame.surfarray.blit_array(screen, pixels)
+
+    # Update the display
+    pygame.display.flip()
+
+# Quit the program
+pygame.quit()
